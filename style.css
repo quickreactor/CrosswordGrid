@@ -1,0 +1,77 @@
+body {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+button {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+main {
+    font-size: 40px;
+}
+
+.resizable {
+    display: inline-block;
+    background: red;
+    overflow: hidden;
+    line-height: 0;
+}
+  
+.resizable img {
+width: 100%;
+height: 100%;
+}
+
+:root {
+--grid-cols: 1;
+--grid-rows: 1;
+}
+
+.container-flex {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    width: 100%;
+    height: 100%;
+}
+
+#container {
+position: absolute;
+top: 80;
+width: 750px;
+height: 750px;
+display: grid;
+grid-template-rows: repeat(var(--grid-rows), 1fr);
+grid-template-columns: repeat(var(--grid-cols), 1fr);
+z-index: 9;
+}
+
+
+
+.grid-item {
+display: flex;
+align-items: center;
+justify-content: center;
+border: 1px solid rgba(0, 0, 0, 0.1);
+text-align: center;
+text-transform: uppercase;
+caret-color: transparent
+}
+
+#current-direction {
+    position: absolute;
+    padding-left: 400px;
+    z-index: 9;
+}
+
+#direction {
+    position: absolute;
+    padding-left: 30px;
+    z-index: 9;
+}
+#clear-button {
+    margin-left: 80px;
+}
+#move-left {
+    margin-left: 80px;
+}
