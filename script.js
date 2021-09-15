@@ -35,7 +35,7 @@ makeRows(13, 13);
 
 let directionSpan = document.querySelector("#direction");
 directionSpan.innerText = "Across";
-directionSpan.style.color = "crimson";
+directionSpan.style.color = "pink";
 };
 
 
@@ -97,6 +97,7 @@ const DEFAULT_AUTHOR = "Anonymous";
 const DEFAULT_CLUE = "(blank clue)";
 
 var direction = ACROSS;
+var highlightColour = "pink";
 
 function changeDirection() {
     let toDir = null;
@@ -108,10 +109,15 @@ function changeDirection() {
     let directionSpan = document.querySelector("#direction");
     if (direction === ACROSS) {
         directionSpan.innerText = "Across";
-        directionSpan.style.color = "crimson";
+        directionSpan.style.color = "pink";
+        highlightColour = "pink";
     } else {
         directionSpan.innerText = "Down";
         directionSpan.style.color = "aqua";
+        highlightColour = "aqua";
+    }
+    if (activeCell !== null) {
+        activeCell.style.background = url('down.png'), highlightColour;
     }
 
 }
@@ -184,7 +190,7 @@ function clickHandler(e) {
         previousElement.style.background = "none";
     }
     activeCell.focus();
-    activeCell.style.background = "aqua";
+    activeCell.style.background = highlightColour;
     previousElement = activeCell;
     if (previousElement) { console.log(previousElement) };
 }
