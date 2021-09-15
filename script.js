@@ -1,8 +1,5 @@
 // TODO
-// CHange hilghlight color to lighter blue, lighter red if across
 // Make Grid size Adjustable with Buttons
-// Make image automatically resizable
-// make lock image button for when you ready to go
 // make it possible to cross out clues
 // highlight full rows and columns when in across or down mode
 
@@ -44,29 +41,54 @@ directionSpan.style.color = "pink";
 var loadFile = function(event) {
 	var image = document.getElementById('output');
 	image.src = URL.createObjectURL(event.target.files[0]);
+    makeResizable();
 };
 
 
 
 var previousElement = null;
 var activeCell = null;
+var isResizable = true;
+
+function toggleResizable() {
+    if (isResizable === true) {
+        lockResizable() 
+    } else {
+        $(function() {
+            $('.resizable').draggable("enable");
+            $('.resizable').resizable("enable");
+        });
+        isResizable = true;
+        document.querySelector("#toggle-lock").innerText = "Lock Image";
+    }
+}
 
 function makeResizable() {
-	alert("yello");
 	$(function() {
 		$('.resizable').draggable();
 		$('.resizable').resizable();
 	});
+    isResizable = true;
+    document.querySelector("#toggle-lock").innerText = "Lock Image";
+}
+
+function lockResizable() {
+    $(function() {
+		$('.resizable').draggable("disable");
+		$('.resizable').resizable("disable");
+	});
+    isResizable = false;
+    document.querySelector("#toggle-lock").innerText = "Unlock Image";
 }
 
 function moveLeft() {
     var container = document.getElementById("container");
-    container.style.left = parseInt((parseInt(container.style.left) - 80));
+    container.style.left = parseInt((parseInt(container.style.left) - 350));
 }
 
 function moveRight() {
     var container = document.getElementById("container");
-    container.style.left = parseInt((parseInt(container.style.left) + 80));
+    container.style.left = parseInt((parseInt(container.style.left) + 350));
 }
 
 
@@ -117,7 +139,7 @@ function changeDirection() {
         highlightColour = "aqua";
     }
     if (activeCell !== null) {
-        activeCell.style.background = url('down.png'), highlightColour;
+        activeCell.style.background = highlightColour;
     }
 
 }
