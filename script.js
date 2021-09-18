@@ -1,6 +1,6 @@
 // TODO
-// Make Grid size Adjustable with Buttons
 // make it possible to cross out clues
+// loss prevention
 // keyboard nav
 
 let container;
@@ -12,7 +12,7 @@ window.onload = function () {
     document.addEventListener("keydown", keyboardHandler)
     $(function() {
 		$('#container').draggable();
-		$('#container').resizable();
+		$('#container').resizable({ aspectRatio: true });
 	});
 };
 
@@ -43,7 +43,7 @@ function makeRows(rows, cols) {
       container.appendChild(cell).className = "grid-item";
       $(function() {
 		$('#container').draggable();
-		$('#container').resizable();
+		$('#container').resizable({ aspectRatio: true });
 	});
 };
   
