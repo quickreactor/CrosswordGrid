@@ -1,13 +1,26 @@
 // TODO
 // Make Grid size Adjustable with Buttons
 // make it possible to cross out clues
-// highlight full rows and columns when in across or down mode
 
+let container;
 
 window.onload = function () {
-    const container = document.getElementById("container");
+    container = document.getElementById("container");
+    makeRows(13, 13);
+    container.addEventListener("click", clickHandler)
+    document.addEventListener("keydown", keyboardHandler)
+};
 
 function makeRows(rows, cols) {
+    document.getElementById("container").innerHTML = "";
+    if (rows === undefined && cols === undefined) {
+        let gridArr = Array.from(document.querySelectorAll(".grid-input")).map(e => e.value);
+        console.log(gridArr);
+        cols = gridArr[0];
+        console.log(cols);
+        rows = gridArr[1];
+        console.log(rows);
+    }
     container.style.setProperty('--grid-rows', rows);
     container.style.setProperty('--grid-cols', cols);
     for (c = 1; c <= (rows * cols); c++) {
@@ -17,22 +30,19 @@ function makeRows(rows, cols) {
       var rowNum = Math.ceil(c / (rows));
       cell.setAttribute("row", rowNum);
       var colNum = c % cols;
-      console.log(colNum);
-      if (colNum === 0) { colNum = 13; }
+      //console.log(colNum);
+      if (colNum === 0) { colNum = cols; }
       cell.setAttribute("column", colNum);
       cell.setAttribute("coord", colNum + "-" + rowNum)
       //cell.innerText = (c + 1);
       container.appendChild(cell).className = "grid-item";
-    };
-    container.addEventListener("click", clickHandler)
-    document.addEventListener("keydown", keyboardHandler)
 };
   
-makeRows(13, 13);
+
 
 let directionSpan = document.querySelector("#direction");
 directionSpan.innerText = "Across";
-directionSpan.style.color = "pink";
+directionSpan.style.color = pink;
 };
 
 
@@ -117,9 +127,14 @@ const DEFAULT_SIZE = 15;
 const DEFAULT_TITLE = "Untitled";
 const DEFAULT_AUTHOR = "Anonymous";
 const DEFAULT_CLUE = "(blank clue)";
+const pink = "rgba(255,192,203,0.8)"
+const aqua = "rgba(0,255,255,0.8)"
+const opacityPink = "rgb(255,192,203,0.3)"
+const opacityAqua = "rgba(0,255,255,0.3)"
 
 var direction = ACROSS;
-var highlightColour = "pink";
+var highlightColour = pink;
+var indicator = opacityPink;
 
 function changeDirection() {
     let toDir = null;
@@ -131,12 +146,14 @@ function changeDirection() {
     let directionSpan = document.querySelector("#direction");
     if (direction === ACROSS) {
         directionSpan.innerText = "Across";
-        directionSpan.style.color = "pink";
-        highlightColour = "pink";
+        directionSpan.style.color = pink;
+        highlightColour = pink;
+        indicator = opacityPink;
     } else {
         directionSpan.innerText = "Down";
-        directionSpan.style.color = "aqua";
-        highlightColour = "aqua";
+        directionSpan.style.color = aqua;
+        highlightColour = aqua;
+        indicator - opacityAqua
     }
     if (activeCell !== null) {
         activeCell.style.background = highlightColour;
@@ -211,7 +228,17 @@ function clickHandler(e) {
     if (previousElement !== null && previousElement !== undefined) {
         previousElement.style.background = "none";
     }
+    Array.from(document.querySelectorAll(".grid-item")).forEach(e => e.style.background = "none");
     activeCell.focus();
+    var rowNum = parseInt(activeCell.getAttribute('row'));
+    var colNum = parseInt(activeCell.getAttribute('column'));
+    var thisRow = Array.from(document.querySelectorAll("[row="+"'"+rowNum+"'"+"]"));
+    var thisCol = Array.from(document.querySelectorAll("[column="+"'"+colNum+"'"+"]"));
+    if (direction === ACROSS) {
+        thisRow.forEach(cell => cell.style.background = opacityPink);
+    } else {
+        thisCol.forEach(cell => cell.style.background = opacityAqua);
+    }
     activeCell.style.background = highlightColour;
     previousElement = activeCell;
     if (previousElement) { console.log(previousElement) };
