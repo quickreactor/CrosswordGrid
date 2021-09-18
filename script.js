@@ -1,6 +1,7 @@
 // TODO
 // Make Grid size Adjustable with Buttons
 // make it possible to cross out clues
+// keyboard nav
 
 let container;
 
@@ -9,10 +10,14 @@ window.onload = function () {
     makeRows(13, 13);
     container.addEventListener("click", clickHandler)
     document.addEventListener("keydown", keyboardHandler)
+    $(function() {
+		$('#container').draggable();
+		$('#container').resizable();
+	});
 };
 
 function makeRows(rows, cols) {
-    document.getElementById("container").innerHTML = "";
+    Array.from(document.querySelectorAll(".grid-item")).forEach(e => e.remove()); // clears grid
     if (rows === undefined && cols === undefined) {
         let gridArr = Array.from(document.querySelectorAll(".grid-input")).map(e => e.value);
         console.log(gridArr);
@@ -36,6 +41,10 @@ function makeRows(rows, cols) {
       cell.setAttribute("coord", colNum + "-" + rowNum)
       //cell.innerText = (c + 1);
       container.appendChild(cell).className = "grid-item";
+      $(function() {
+		$('#container').draggable();
+		$('#container').resizable();
+	});
 };
   
 
@@ -51,44 +60,62 @@ directionSpan.style.color = pink;
 var loadFile = function(event) {
 	var image = document.getElementById('output');
 	image.src = URL.createObjectURL(event.target.files[0]);
-    makeResizable();
+    makeResizableImage();
 };
 
 
 
 var previousElement = null;
 var activeCell = null;
-var isResizable = true;
+var isImageResizable = true;
+var isGridResizable = true;
 
-function toggleResizable() {
-    if (isResizable === true) {
-        lockResizable() 
+function toggleResizableImage() {
+    if (isImageResizable === true) {
+        lockResizableImage() 
     } else {
         $(function() {
             $('.resizable').draggable("enable");
             $('.resizable').resizable("enable");
         });
-        isResizable = true;
-        document.querySelector("#toggle-lock").innerText = "Lock Image";
+        isImageResizable = true;
+        document.querySelector("#toggle-lock-image").innerText = "Lock Image";
     }
 }
 
-function makeResizable() {
+function makeResizableImage() {
 	$(function() {
 		$('.resizable').draggable();
 		$('.resizable').resizable();
 	});
-    isResizable = true;
-    document.querySelector("#toggle-lock").innerText = "Lock Image";
+    isImageResizable = true;
+    document.querySelector("#toggle-lock-image").innerText = "Lock Image";
 }
 
-function lockResizable() {
+function lockResizableImage() {
     $(function() {
 		$('.resizable').draggable("disable");
 		$('.resizable').resizable("disable");
 	});
-    isResizable = false;
-    document.querySelector("#toggle-lock").innerText = "Unlock Image";
+    isImageResizable = false;
+    document.querySelector("#toggle-lock-image").innerText = "Unlock Image";
+}
+
+function toggleResizableGrid() {
+    isGridResizable = !isGridResizable;
+    if (isGridResizable) {
+        $(function() {
+            $('#container').draggable('enable');
+            $('#container').resizable('enable');
+        });
+        document.querySelector("#toggle-lock-grid").innerText = "Lock Grid";
+    } else {
+        $(function() {
+            $('#container').draggable('disable');
+            $('#container').resizable('disable');
+        });
+        document.querySelector("#toggle-lock-grid").innerText = "Unlock Grid";
+    }
 }
 
 function moveLeft() {
@@ -142,7 +169,7 @@ function changeDirection() {
     toDir = (direction == ACROSS) ? DOWN : ACROSS;
 
     direction = toDir;
-
+    highlightRowCol()
     let directionSpan = document.querySelector("#direction");
     if (direction === ACROSS) {
         directionSpan.innerText = "Across";
@@ -228,17 +255,8 @@ function clickHandler(e) {
     if (previousElement !== null && previousElement !== undefined) {
         previousElement.style.background = "none";
     }
-    Array.from(document.querySelectorAll(".grid-item")).forEach(e => e.style.background = "none");
     activeCell.focus();
-    var rowNum = parseInt(activeCell.getAttribute('row'));
-    var colNum = parseInt(activeCell.getAttribute('column'));
-    var thisRow = Array.from(document.querySelectorAll("[row="+"'"+rowNum+"'"+"]"));
-    var thisCol = Array.from(document.querySelectorAll("[column="+"'"+colNum+"'"+"]"));
-    if (direction === ACROSS) {
-        thisRow.forEach(cell => cell.style.background = opacityPink);
-    } else {
-        thisCol.forEach(cell => cell.style.background = opacityAqua);
-    }
+    highlightRowCol()
     activeCell.style.background = highlightColour;
     previousElement = activeCell;
     if (previousElement) { console.log(previousElement) };
@@ -263,4 +281,24 @@ function clearAll() {
     let gridCells = Array.from(document.querySelectorAll(".grid-item"));
     gridCells.forEach(e => e.innerText = " ");
 
+}
+
+function highlightRowCol() {
+    Array.from(document.querySelectorAll(".grid-item")).forEach(e => e.style.background = "none");
+    var rowNum = parseInt(activeCell.getAttribute('row'));
+    var colNum = parseInt(activeCell.getAttribute('column'));
+    var thisRow = Array.from(document.querySelectorAll("[row="+"'"+rowNum+"'"+"]"));
+    var thisCol = Array.from(document.querySelectorAll("[column="+"'"+colNum+"'"+"]"));
+    if (direction === ACROSS) {
+        thisRow.forEach(cell => cell.style.background = opacityPink);
+    } else {
+        thisCol.forEach(cell => cell.style.background = opacityAqua);
+    }
+}
+
+function lel() {
+    $(function() {
+		$('#container').draggable('enable');
+		$('#container').resizable('enable');
+	});
 }
