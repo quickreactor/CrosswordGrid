@@ -7,7 +7,7 @@
 <body>
 	<header>
 		<p><input type="file"  accept="image/*" name="image" id="file"  onchange="loadFile(event)" style="display: none;"></p><p><label for="file" style="cursor: pointer;">Upload Image</label><span id="current-direction">Current Direction: <span id="direction" style="color: crimson;">Across</span></span></p>
-		<p><button onclick="makeResizable()">Resize Image</button><button id="move-left" onclick="moveLeft()">&lt</button> Move Grid <button onclick="moveRight()">&gt</button><button id="clear-button" onclick="clearAll()">Clear all squares</button></p>
+		<p><button id="toggle-lock" onclick="toggleResizable()">Lock image</button><button id="move-left" onclick="moveLeft()">&lt</button> Move Grid <button onclick="moveRight()">&gt</button><button id="clear-button" onclick="clearAll()">Clear all squares</button></p>
 	</header>
 	<main>
 		<div class="resizable">

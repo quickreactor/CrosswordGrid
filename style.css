@@ -3,7 +3,19 @@ body {
 }
 
 button {
+    position: relative;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    z-index: 9;
+}
+
+label {
+    position: relative;
+    z-index: 9;
+}
+
+p {
+    position: relative;
+    z-index: 9;
 }
 
 main {
