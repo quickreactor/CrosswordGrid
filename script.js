@@ -12,7 +12,7 @@ window.onload = function () {
     document.addEventListener("keydown", keyboardHandler)
     $(function() {
 		$('#container').draggable();
-		$('#container').resizable({ aspectRatio: true });
+		$('#container').resizable();
 	});
 };
 
@@ -43,7 +43,7 @@ function makeRows(rows, cols) {
       container.appendChild(cell).className = "grid-item";
       $(function() {
 		$('#container').draggable();
-		$('#container').resizable({ aspectRatio: true });
+		$('#container').resizable();
 	});
 };
   
@@ -117,17 +117,6 @@ function toggleResizableGrid() {
         document.querySelector("#toggle-lock-grid").innerText = "Unlock Grid";
     }
 }
-
-function moveLeft() {
-    var container = document.getElementById("container");
-    container.style.left = parseInt((parseInt(container.style.left) - 350));
-}
-
-function moveRight() {
-    var container = document.getElementById("container");
-    container.style.left = parseInt((parseInt(container.style.left) + 350));
-}
-
 
 const keyboard = {
     "a": 65, "b": 66, "c": 67, "d": 68, "e": 69, "f": 70, "g": 71, "h": 72,
@@ -207,17 +196,23 @@ function keyboardHandler(e) {
         } else if (isBackspace) {
             newFill = " ";
             activeCell.innerText = newFill;
-            move(activeCell, -1);
-        } else {
-                    // input string (letter or space)
-            if (isLetter) {
+            if (direction === ACROSS){
+                move(activeCell, -1, 0);
+            } else {
+                move(activeCell, 0, -1);
+            }
+        } else if (isLetter) {
 
                 // get string
                 newFill = String.fromCharCode(e.which);
                 activeCell.innerText = newFill;
 
                 // Move The Selection
-                move(activeCell, 1);
+                if (direction === ACROSS) {
+                    move(activeCell, 1, 0);
+                } else {
+                    move(activeCell, 0, 1);
+                }
                 
                 // if (direction === ACROSS) {
                 //     let row = parseInt(activeCell.getAttribute('row'));
@@ -237,7 +232,21 @@ function keyboardHandler(e) {
                 //     var next = document.querySelector("[coord="+"'"+nextCoord+"'"+"]")
                 //     clickHandler({target: next})
                 // }
-            }
+        } else if (isDirection) {
+            switch (e.which) {
+                case keyboard.left:
+                    move(activeCell, -1, 0);
+                    break;
+                case keyboard.up:
+                    move(activeCell, 0, -1);
+                    break;
+                case keyboard.right:
+                    move(activeCell, 1, 0);
+                    break;
+                case keyboard.down:
+                    move(activeCell, 0, 1);
+                    break;
+              }
         }
     }
 }
@@ -262,17 +271,12 @@ function clickHandler(e) {
     if (previousElement) { console.log(previousElement) };
 }
 
-function move(cell, spaces) {
+function move(cell, spacesX, spacesY) {
     let row = parseInt(cell.getAttribute('row'));
     let col = parseInt(cell.getAttribute('column'));
-    let nextRow = parseInt(cell.getAttribute('row')) + spaces;
-    let nextCol = parseInt(cell.getAttribute('column')) + spaces;
-    let nextCoord = "";
-    if (direction === ACROSS) {
-        nextCoord = nextCol + '-' + row;
-    } else {
-        nextCoord = col + '-' + nextRow;
-    }
+    let nextRow = parseInt(cell.getAttribute('row')) + spacesY;
+    let nextCol = parseInt(cell.getAttribute('column')) + spacesX;
+    let nextCoord = nextCol + '-' + nextRow;
     var next = document.querySelector("[coord="+"'"+nextCoord+"'"+"]")
     clickHandler({target: next})
 }
@@ -302,3 +306,5 @@ function lel() {
 		$('#container').resizable('enable');
 	});
 }
+
+limit
