@@ -1,22 +1,33 @@
 // TODO
 // make it possible to cross out clues
-// loss prevention
-// keyboard nav
+
+
+
 
 let container;
 
+let xwGrid = {
+    rows: 13,
+    cols: 13
+}
+
 window.onload = function () {
     container = document.getElementById("container");
-    makeRows(13, 13);
+    makeRows(xwGrid.cols, xwGrid.rows);
     container.addEventListener("click", clickHandler)
     document.addEventListener("keydown", keyboardHandler)
     $(function() {
 		$('#container').draggable();
 		$('#container').resizable();
 	});
+    window.onbeforeunload = function() {
+        return true;
+    };
 };
 
 function makeRows(rows, cols) {
+    xwGrid.rows = rows;
+    xwGrid.cols = cols;
     Array.from(document.querySelectorAll(".grid-item")).forEach(e => e.remove()); // clears grid
     if (rows === undefined && cols === undefined) {
         let gridArr = Array.from(document.querySelectorAll(".grid-input")).map(e => e.value);
@@ -43,7 +54,17 @@ function makeRows(rows, cols) {
       container.appendChild(cell).className = "grid-item";
       $(function() {
 		$('#container').draggable();
-		$('#container').resizable();
+		$('#container').resizable(
+            {
+                resize: function(event, ui) {
+                  // handle fontsize here
+                  console.log(ui.size); // gives you the current size of the div
+                  var size = ui.size;
+                  // something like this change the values according to your requirements
+                  $(this).css("font-size", Math.min(size.width, size.height) / 19 + "px"); 
+                }
+            }
+        );
 	});
 };
   
@@ -86,7 +107,7 @@ function toggleResizableImage() {
 function makeResizableImage() {
 	$(function() {
 		$('.resizable').draggable();
-		$('.resizable').resizable();
+		$('.resizable').resizable({ aspectRatio: true });
 	});
     isImageResizable = true;
     document.querySelector("#toggle-lock-image").innerText = "Lock Image";
@@ -144,9 +165,9 @@ const DEFAULT_TITLE = "Untitled";
 const DEFAULT_AUTHOR = "Anonymous";
 const DEFAULT_CLUE = "(blank clue)";
 const pink = "rgba(255,192,203,0.8)"
-const aqua = "rgba(0,255,255,0.8)"
-const opacityPink = "rgb(255,192,203,0.3)"
-const opacityAqua = "rgba(0,255,255,0.3)"
+const aqua = "rgba(0,255,255,0.8)";
+const opacityPink = "rgb(255,192,203,0.3)";
+const opacityAqua = "rgba(0,255,255,0.3)";
 
 var direction = ACROSS;
 var highlightColour = pink;
@@ -274,8 +295,8 @@ function clickHandler(e) {
 function move(cell, spacesX, spacesY) {
     let row = parseInt(cell.getAttribute('row'));
     let col = parseInt(cell.getAttribute('column'));
-    let nextRow = parseInt(cell.getAttribute('row')) + spacesY;
-    let nextCol = parseInt(cell.getAttribute('column')) + spacesX;
+    let nextRow = Math.max(Math.min((row + spacesY), xwGrid.rows), 1);
+    let nextCol = Math.max(Math.min((col + spacesX), xwGrid.cols), 1);
     let nextCoord = nextCol + '-' + nextRow;
     var next = document.querySelector("[coord="+"'"+nextCoord+"'"+"]")
     clickHandler({target: next})
@@ -306,5 +327,3 @@ function lel() {
 		$('#container').resizable('enable');
 	});
 }
-
-limit
