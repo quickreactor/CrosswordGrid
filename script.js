@@ -1,6 +1,9 @@
 // TODO
 // add clear canvas button
 // add anagram wheel function
+// scale by viewport
+// font caling needs to consider grid size too
+// make text unslectable
 
 
 
@@ -10,7 +13,8 @@ let container;
 
 let xwGrid = {
     rows: 13,
-    cols: 13
+    cols: 13,
+    size: 750
 }
 
 const keyboard = {
@@ -147,12 +151,16 @@ function makeRows(rows, cols) {
                   // handle fontsize here
                   console.log(ui.size); // gives you the current size of the div
                   var size = ui.size;
+                  xwGrid.size = Math.max(size.width, size.height);
+                  var largestAxis = Math.max(xwGrid.cols, xwGrid.rows);
+                //   console.log(((Math.min(size.width, size.height) / 19) / Math.max(xwGrid.cols, xwGrid.rows)) * 13);
                   // something like this change the values according to your requirements
-                  $(this).css("font-size", Math.min(size.width, size.height) / 19 + "px"); 
+                  $(this).css("font-size", Math.floor(((Math.min(size.width, size.height) / 19) / largestAxis) * 13) + "px"); 
                 }
             }
         );
 	});
+    $(container).css("font-size", Math.floor((xwGrid.size / 19) / Math.max(xwGrid.cols, xwGrid.rows)) * 13 + "px"); 
 };
   
 
