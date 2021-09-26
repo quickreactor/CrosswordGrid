@@ -26,8 +26,6 @@ window.onload = function () {
 };
 
 function makeRows(rows, cols) {
-    xwGrid.rows = rows;
-    xwGrid.cols = cols;
     Array.from(document.querySelectorAll(".grid-item")).forEach(e => e.remove()); // clears grid
     if (rows === undefined && cols === undefined) {
         let gridArr = Array.from(document.querySelectorAll(".grid-input")).map(e => e.value);
@@ -36,6 +34,8 @@ function makeRows(rows, cols) {
         console.log(cols);
         rows = gridArr[1];
         console.log(rows);
+        xwGrid.rows = rows;
+        xwGrid.cols = cols;
     }
     container.style.setProperty('--grid-rows', rows);
     container.style.setProperty('--grid-cols', cols);
