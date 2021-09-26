@@ -2,7 +2,7 @@
 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
 <link rel="stylesheet" href="style.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-<script src="script.js"></script>
+
 
 <body>
 	<header>
@@ -17,15 +17,16 @@
 		<p><button id="toggle-lock-image" onclick="toggleResizableImage()">Lock image</button> <button id="toggle-lock-grid" onclick="toggleResizableGrid()">Lock Grid</button><button id="clear-button" onclick="clearAll()">Clear all squares</button></p>
 	</header>
 	<main>
-		<div class="resizable">
+		<div class="resizable" style="z-index: 7;">
 			<img class="output" id="output">
 		</div>
+		<canvas id="canvas" style="z-index: 6;"></canvas>
 		<div id="container" style="left: 850px;font-size: 40px;">
 	
 		</div>
 
 	</main>
-
+	<script src="script.js"></script>
 </body>
 
 

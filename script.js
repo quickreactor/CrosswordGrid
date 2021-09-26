@@ -1,5 +1,7 @@
 // TODO
-// make it possible to cross out clues
+// add clear canvas button
+// add anagram wheel function
+
 
 
 
@@ -11,19 +13,103 @@ let xwGrid = {
     cols: 13
 }
 
-window.onload = function () {
-    container = document.getElementById("container");
-    makeRows(xwGrid.cols, xwGrid.rows);
-    container.addEventListener("click", clickHandler)
-    document.addEventListener("keydown", keyboardHandler)
-    $(function() {
-		$('#container').draggable();
-		$('#container').resizable();
-	});
-    window.onbeforeunload = function() {
-        return true;
-    };
+const keyboard = {
+    "a": 65, "b": 66, "c": 67, "d": 68, "e": 69, "f": 70, "g": 71, "h": 72,
+    "i": 73, "j": 74, "k": 75, "l": 76, "m": 77, "n": 78, "o": 79, "p": 80,
+    "q": 81, "r": 82, "s": 83, "t": 84, "u": 85, "v": 86, "w": 87, "x": 88, "y": 89,
+    "z": 90,
+    "black": 190, ".": 190,
+    "delete": 8,
+    "enter": 13,
+    "space": 32,
+    "left": 37,
+    "up": 38,
+    "right": 39,
+    "down": 40,
+    // "ctrl":   17
 };
+
+const BLACK = ".";
+const DASH = "-";
+const BLANK = " ";
+const ACROSS = "across";
+const DOWN = "down";
+const DEFAULT_SIZE = 15;
+const DEFAULT_TITLE = "Untitled";
+const DEFAULT_AUTHOR = "Anonymous";
+const DEFAULT_CLUE = "(blank clue)";
+const pink = "rgba(255,192,203,0.8)"
+const aqua = "rgba(0,255,255,0.8)";
+const opacityPink = "rgb(255,192,203,0.3)";
+const opacityAqua = "rgba(0,255,255,0.3)";
+
+var direction = ACROSS;
+var highlightColour = pink;
+var indicator = opacityPink;
+
+
+container = document.getElementById("container");
+makeRows(xwGrid.cols, xwGrid.rows);
+container.addEventListener("click", clickHandler)
+container.mouseIsOver = false;
+container.onmouseover = function()   {
+    stop();
+    this.mouseIsOver = true;
+};
+container.onmouseout = function()   {
+    this.mouseIsOver = false;
+}
+document.addEventListener("keydown", keyboardHandler)
+$(function() {
+    $('#container').draggable();
+    $('#container').resizable();
+});
+// window.onbeforeunload = function() {
+//     return true;
+// };
+
+// CANVAS SHIT
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+let coord = { x: 0, y: 0 };
+
+document.addEventListener("mousedown", start);
+document.addEventListener("mouseup", stop);
+window.addEventListener("resize", resize);
+
+resize();
+
+function resize() {
+    ctx.canvas.width = window.innerWidth;
+    ctx.canvas.height = window.innerHeight;
+}
+function reposition(event) {
+    coord.x = event.clientX - canvas.offsetLeft;
+    coord.y = event.clientY - canvas.offsetTop;
+}
+function start(event) {
+    if (container.mouseIsOver !== true) {
+        document.addEventListener("mousemove", draw);
+        reposition(event);
+    }
+}
+function stop() {
+    document.removeEventListener("mousemove", draw);
+}
+function draw(event) {
+    ctx.beginPath();
+    ctx.lineWidth = 5;
+    ctx.lineCap = "round";
+    ctx.strokeStyle = "#ACD3ED";
+    ctx.moveTo(coord.x, coord.y);
+    reposition(event);
+    ctx.lineTo(coord.x, coord.y);
+    ctx.stroke();
+}
+
+// END CANVAS
+
+
 
 function makeRows(rows, cols) {
     Array.from(document.querySelectorAll(".grid-item")).forEach(e => e.remove()); // clears grid
@@ -50,6 +136,7 @@ function makeRows(rows, cols) {
       if (colNum === 0) { colNum = cols; }
       cell.setAttribute("column", colNum);
       cell.setAttribute("coord", colNum + "-" + rowNum)
+      cell.style.border = "1px solid rgba(255, 0, 150, 0.8";
       //cell.innerText = (c + 1);
       container.appendChild(cell).className = "grid-item";
       $(function() {
@@ -93,8 +180,16 @@ var isGridResizable = true;
 
 function toggleResizableImage() {
     if (isImageResizable === true) {
-        lockResizableImage() 
+        const canvas = document.getElementById("canvas");
+        const image = document.querySelector(".resizable");
+        image.style.zIndex = 6;
+        canvas.style.zIndex = 7;
+        lockResizableImage()
     } else {
+        const canvas = document.getElementById("canvas");
+        const image = document.querySelector(".resizable");
+        image.style.zIndex = 7;
+        canvas.style.zIndex = 6;
         $(function() {
             $('.resizable').draggable("enable");
             $('.resizable').resizable("enable");
@@ -123,6 +218,7 @@ function lockResizableImage() {
 }
 
 function toggleResizableGrid() {
+    let gridCells = Array.from(document.querySelectorAll(".grid-item"));
     isGridResizable = !isGridResizable;
     if (isGridResizable) {
         $(function() {
@@ -130,48 +226,16 @@ function toggleResizableGrid() {
             $('#container').resizable('enable');
         });
         document.querySelector("#toggle-lock-grid").innerText = "Lock Grid";
+        gridCells.forEach(e => e.style.border = "1px solid rgba(255, 0, 150, 0.8");
     } else {
         $(function() {
             $('#container').draggable('disable');
             $('#container').resizable('disable');
         });
         document.querySelector("#toggle-lock-grid").innerText = "Unlock Grid";
+        gridCells.forEach(e => e.style.border = "1px solid rgba(0, 0, 0, 0.1");
     }
 }
-
-const keyboard = {
-    "a": 65, "b": 66, "c": 67, "d": 68, "e": 69, "f": 70, "g": 71, "h": 72,
-    "i": 73, "j": 74, "k": 75, "l": 76, "m": 77, "n": 78, "o": 79, "p": 80,
-    "q": 81, "r": 82, "s": 83, "t": 84, "u": 85, "v": 86, "w": 87, "x": 88, "y": 89,
-    "z": 90,
-    "black": 190, ".": 190,
-    "delete": 8,
-    "enter": 13,
-    "space": 32,
-    "left": 37,
-    "up": 38,
-    "right": 39,
-    "down": 40,
-    // "ctrl":   17
-};
-
-const BLACK = ".";
-const DASH = "-";
-const BLANK = " ";
-const ACROSS = "across";
-const DOWN = "down";
-const DEFAULT_SIZE = 15;
-const DEFAULT_TITLE = "Untitled";
-const DEFAULT_AUTHOR = "Anonymous";
-const DEFAULT_CLUE = "(blank clue)";
-const pink = "rgba(255,192,203,0.8)"
-const aqua = "rgba(0,255,255,0.8)";
-const opacityPink = "rgb(255,192,203,0.3)";
-const opacityAqua = "rgba(0,255,255,0.3)";
-
-var direction = ACROSS;
-var highlightColour = pink;
-var indicator = opacityPink;
 
 function changeDirection() {
     let toDir = null;
@@ -327,3 +391,6 @@ function lel() {
 		$('#container').resizable('enable');
 	});
 }
+
+
+

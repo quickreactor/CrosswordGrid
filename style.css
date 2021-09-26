@@ -23,14 +23,19 @@ main {
 }
 
 .resizable {
-    display: inline-block;
+    position: relative;
+    /* display: inline-block; */
     background: red;
-    overflow: hidden;
-    line-height: 0;
+    /* overflow: hidden; */
+    z-index: 7;
+    width: 100%;
+    top: 0px;
+    right: 0px;
 }
   
 .resizable img {
 width: 100%;
+z-index: 8;
 }
 
 :root {
@@ -63,7 +68,7 @@ z-index: 9;
 display: flex;
 align-items: center;
 justify-content: center;
-border: 1px solid rgba(0, 0, 0, 0.1);
+box-sizing: border-box;
 text-align: center;
 text-transform: uppercase;
 caret-color: transparent
@@ -93,4 +98,16 @@ caret-color: transparent
 
 #grid-generator {
     margin-left: 80px;
+}
+
+#canvas {
+    cursor: crosshair;
+    margin: 0px;
+    padding: 0px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    height: 100%;
+    width: 100%;
+    z-index: 6;
 }
