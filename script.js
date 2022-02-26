@@ -88,8 +88,8 @@ function resize() {
     ctx.canvas.height = window.innerHeight;
 }
 function reposition(event) {
-    coord.x = event.clientX - canvas.offsetLeft;
-    coord.y = event.clientY - canvas.offsetTop;
+    coord.x = event.offsetX;
+    coord.y = event.offsetY;
 }
 function start(event) {
     if (container.mouseIsOver !== true) {
