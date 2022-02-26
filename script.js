@@ -1,9 +1,9 @@
 // TODO
-// add clear canvas button
+// undo function on canvas drawing
 // add anagram wheel function
 // scale by viewport
-// font caling needs to consider grid size too
-// make text unslectable
+// font scaling needs to consider grid size too
+// better clue system/positioning
 
 
 
