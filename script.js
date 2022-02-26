@@ -4,7 +4,7 @@
 // scale by viewport
 // font scaling needs to consider grid size too
 // better clue system/positioning
-
+// auto resive canvas when the image div resizes
 
 
 
