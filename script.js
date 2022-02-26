@@ -400,5 +400,13 @@ function lel() {
 	});
 }
 
+function clearCanvas() {
+    
+  var c = document.getElementById("myCanvas");
+  var ctx = c.getContext("2d");
+  ctx.clearRect(0, 0, c.width, c.height);
+  ctx.beginPath();
+
+}
 
 
