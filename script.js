@@ -94,7 +94,6 @@ function resize() {
 function reposition(event) {
     coord.x = event.offsetX;
     coord.y = event.offsetY;
->>>>>>> 8dc80fca9cef53012a77c2f061fdabdee329b8a8
 }
 function start(event) {
     if (container.mouseIsOver !== true) {
