@@ -22,9 +22,6 @@ p {
     z-index: 9;
 }
 
-main {
-    /* font-size: 40px; */
-}
 
 .resizable {
     position: relative;
@@ -111,7 +108,74 @@ caret-color: transparent
     position: absolute;
     top: 80px;
     right: 0px;
-    height: 100%;
-    width: 100%;
+    /* height: 1px;
+    width: 1px; */
     z-index: 6;
+}
+
+/* draggable window stuff */
+
+.window {
+    z-index: 2;
+    border: 1px solid black;
+    background-color: white;
+    width: 350px;
+    height: 400px;
+    position: absolute;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.window .window-bar {
+    padding-left: 6px;
+    padding-top: 3px;
+    cursor: move;
+    background-color: #666666;
+    color: white;
+}
+
+.window .window-bar .window-close {
+    cursor: pointer;
+    display: inline-block;
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    background-color: white;
+    width: 14px;
+    height: 14px;
+    padding-left: 2px;
+    padding-top: 2px;
+}
+
+.window-body {
+    margin: 1em;
+}
+
+.window-body {
+    width: 320px; height: 320px; border: 1px solid #000; position: relative;
+}
+.field {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    /* background: #f00; */
+    text-align: center;
+    font-weight: bold;
+}
+
+#anagram-div {
+    margin: 10px;
+}
+
+#anagram-input {
+    margin-right: 10px;
+}
+
+#anagram-ok {
+    margin-right: 10px;
 }

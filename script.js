@@ -9,7 +9,7 @@
 // auto resive canvas when the image div resizes
 
 
-
+let stopDrawing = true;
 
 let container;
 
@@ -61,11 +61,12 @@ makeRows(xwGrid.cols, xwGrid.rows);
 container.addEventListener("click", clickHandler)
 container.mouseIsOver = false;
 container.onmouseover = function()   {
-    stop();
-    this.mouseIsOver = true;
+    // stop();
+    stopDrawing = true;
 };
 container.onmouseout = function()   {
-    this.mouseIsOver = false;
+     stopDrawing = false;
+    // start();
 }
 document.addEventListener("keydown", keyboardHandler)
 $(function() {
@@ -96,7 +97,7 @@ function reposition(event) {
     coord.y = event.offsetY;
 }
 function start(event) {
-    if (container.mouseIsOver !== true) {
+    if (stopDrawing !== true) {
         document.addEventListener("mousemove", draw);
         reposition(event);
     }
@@ -415,3 +416,175 @@ function clearCanvas() {
 }
 
 
+// new window stuff
+var state = {
+    isDragging: false,
+    isHidden: true,
+    xDiff: 0,
+    yDiff: 0,
+    x: 50,
+    y: 50
+};
+
+// hehe: http://youmightnotneedjquery.com/
+function ready(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading"){
+        fn();
+    } else {
+        document.addEventListener('DOMContentLoaded', fn);
+    }
+}
+
+function renderWindow(w, myState) {
+    if (state.isHidden) {
+        w.style.display = 'none';
+    } else {
+        w.style.display = '';
+    }
+
+    w.style.transform = 'translate(' + myState.x + 'px, ' + myState.y + 'px)';
+}
+
+function clampX(n) {
+    return Math.min(Math.max(n, 0),
+                    // container width - window width
+                    500 - 400);
+}
+
+function clampY(n) {
+    return Math.min(Math.max(n, 0), 800);
+}
+
+function onMouseMove(e) {
+    if (state.isDragging) {
+        state.x = e.pageX - state.xDiff;
+        state.y = e.pageY - state.yDiff;
+    }
+
+    // Update window position
+    var w = document.getElementById('window');
+    renderWindow(w, state);
+}
+
+function onMouseDown(e) {
+    state.isDragging = true;
+    state.xDiff = e.pageX - state.x;
+    state.yDiff = e.pageY - state.y;
+}
+
+function onMouseOver(e) {
+    if (state.isHidden === false) {
+        stopDrawing = true;
+    }
+}
+
+function onMouseOut(e) {
+    if (state.isHidden === false) {
+        stopDrawing = false;
+    }
+}
+
+function onMouseUp() {
+    state.isDragging = false;
+}
+
+function closeWindow() {
+    state.isHidden = true;
+
+    var w = document.getElementById('window');
+    renderWindow(w, state);
+}
+
+ready(function() {
+    var w = document.getElementById('window');
+    renderWindow(w, state);
+
+    var windowBar = document.querySelectorAll('.window-bar');
+    windowBar[0].addEventListener('mousedown', onMouseDown);
+    var windowDiv = document.querySelector('#window');
+    windowDiv.addEventListener('mouseover', onMouseOver);
+    windowDiv.addEventListener('mouseout', onMouseOut);
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+
+    var closeButton = document.querySelectorAll('.window-close');
+    closeButton[0].addEventListener('click', closeWindow);
+
+    var toggleButton = document.getElementById('windowtoggle');
+    toggleButton.addEventListener('click', function() {
+        state.isHidden = !state.isHidden;
+        renderWindow(w, state);
+    });
+});
+
+// Circle stuff
+
+function createFields() {
+    $('.field').remove();
+    var value = $('#anagram-input').val();
+    var characters = value.length;
+    var array = Array.of(...value);
+    var shuffled = shuffle(array);
+    var container = $('.window-body');
+    for(var i = 0; i < characters; i++) {
+        $('<div/>', {
+            'class': 'field',
+            'text': shuffled[i].toUpperCase()
+        }).appendTo(container);
+    }
+    $('#anagram-ok').text("Shuffle");
+    distributeFields()
+}
+
+function distributeFields() {
+    var radius = 130;
+    var fields = $('.field'), container = $('.window-body'),
+        width = container.width(), height = container.height(),
+        angle = 0, step = (2*Math.PI) / fields.length;
+    fields.each(function() {
+        var x = Math.round(width/2 + radius * Math.cos(angle) - $(this).width()/2);
+        var y = Math.round(height/2 + radius * Math.sin(angle) - $(this).height()/2);
+        if(window.console) {
+            console.log($(this).text(), x, y);
+        }
+        $(this).css({
+            left: x + 'px',
+            top: y + 'px'
+        });
+        angle += step;
+    });
+}
+
+$('#anagram-input').on('input', function() {
+    $('#anagram-ok').text("OK");
+});
+
+$("#anagram-input").on('keyup', function (e) {
+    if (e.key === 'Enter' || e.keyCode === 13) {
+        createFields();
+    }
+});
+
+//createFields();
+//distributeFields();
+
+// END Circle Stuff
+
+function shuffle(array) {
+    let currentIndex = array.length,  randomIndex;
+  
+    // While there remain elements to shuffle.
+    while (currentIndex != 0) {
+  
+      // Pick a remaining element.
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+  
+      // And swap it with the current element.
+      [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex], array[currentIndex]];
+    }
+  
+    return array;
+  }

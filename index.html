@@ -14,7 +14,12 @@
 			</span>
 			<span id="current-direction">Current Direction: <span id="direction" style="color: crimson;">Across</span></span>
 		</p>
-		<p><button id="toggle-lock-image" onclick="toggleResizableImage()">Lock image</button> <button id="toggle-lock-grid" onclick="toggleResizableGrid()">Lock Grid</button><button id="clear-button" onclick="clearAll()">Clear all squares</button><button id="button_clear" onclick="clearCanvas()" >Clear drawing</button></p>
+		<p><button id="toggle-lock-image" onclick="toggleResizableImage()">Lock image</button>
+		<button id="toggle-lock-grid" onclick="toggleResizableGrid()">Lock Grid</button>
+		<button id="clear-button" onclick="clearAll()">Clear all squares</button>
+		<button id="button_clear" onclick="clearCanvas()" >Clear drawing</button>
+		<button id="windowtoggle">Anagram Helper</button>
+		</p>
 	</header>
 	<main>
 		<div class="resizable" style="z-index: 7;">
@@ -23,6 +28,31 @@
 		<canvas id="canvas" style="z-index: 6;"></canvas>
 		<div id="container" style="left: 850px;font-size: 40px;">
 	
+		</div>
+		<div class="window" id="window" style="z-index: 8;">
+			<div class="window-bar">
+				<div>Anagram Circle</div>
+				<span class="window-close">
+					<svg viewport="0 0 12 12" version="1.1"
+						 width="16" height="16"
+						 xmlns="http://www.w3.org/2000/svg">
+						<line x1="1" y1="11"
+							  x2="11" y2="1"
+							  stroke="black"
+							  strokeWidth="2"/>
+						<line x1="1" y1="1"
+							  x2="11" y2="11"
+							  stroke="black"
+							  strokeWidth="2"/>
+					</svg>
+				</span>
+			</div>
+			<div id="anagram-div"><input type="text" id="anagram-input">
+				<button id="anagram-ok" onclick="createFields()">OK</button>
+			</div>
+			
+			<div class="window-body">
+			</div>
 		</div>
 
 	</main>
