@@ -1,9 +1,8 @@
 // TODO
 // add clear canvas button
 // add anagram wheel function
-// scale by viewport
-// font caling needs to consider grid size too
-// make text unslectable
+// scale entire app by viewport
+// make drawing only available afte you lock the image
 
 
 
@@ -42,10 +41,12 @@ const DEFAULT_SIZE = 15;
 const DEFAULT_TITLE = "Untitled";
 const DEFAULT_AUTHOR = "Anonymous";
 const DEFAULT_CLUE = "(blank clue)";
-const pink = "rgba(255,192,203,0.8)"
-const aqua = "rgba(0,255,255,0.8)";
-const opacityPink = "rgb(255,192,203,0.3)";
-const opacityAqua = "rgba(0,255,255,0.3)";
+const pink = "rgba(255,100,150,0.6)"
+const aqua = "rgba(50,220,220,0.6)";
+// const pink = "rgba(255,192,203,0.8)"
+// const aqua = "rgba(0,255,255,0.8)";
+const opacityPink = "rgb(255,192,203,0.2)";
+const opacityAqua = "rgba(0,255,255,0.2)";
 
 var direction = ACROSS;
 var highlightColour = pink;
@@ -87,9 +88,9 @@ function resize() {
     ctx.canvas.width = window.innerWidth;
     ctx.canvas.height = window.innerHeight;
 }
-function reposition(event) {
-    coord.x = event.clientX - canvas.offsetLeft;
-    coord.y = event.clientY - canvas.offsetTop;
+function reposition(e) {
+    coord.x = e.offsetX;
+    coord.y = e.offsetY;
 }
 function start(event) {
     if (container.mouseIsOver !== true) {
@@ -141,6 +142,7 @@ function makeRows(rows, cols) {
       cell.setAttribute("column", colNum);
       cell.setAttribute("coord", colNum + "-" + rowNum)
       cell.style.border = "1px solid rgba(255, 0, 150, 0.8";
+      cell.style.userSelect = "none";
       //cell.innerText = (c + 1);
       container.appendChild(cell).className = "grid-item";
       $(function() {
