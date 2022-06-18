@@ -1,9 +1,12 @@
 // TODO
-// add clear canvas button
 // add anagram wheel function
 // scale entire app by viewport
 // make drawing only available afte you lock the image
 
+// scale by viewport
+// font scaling needs to consider grid size too
+// better clue system/positioning
+// auto resive canvas when the image div resizes
 
 
 
@@ -88,9 +91,10 @@ function resize() {
     ctx.canvas.width = window.innerWidth;
     ctx.canvas.height = window.innerHeight;
 }
-function reposition(e) {
-    coord.x = e.offsetX;
-    coord.y = e.offsetY;
+function reposition(event) {
+    coord.x = event.offsetX;
+    coord.y = event.offsetY;
+>>>>>>> 8dc80fca9cef53012a77c2f061fdabdee329b8a8
 }
 function start(event) {
     if (container.mouseIsOver !== true) {
@@ -402,5 +406,13 @@ function lel() {
 	});
 }
 
+function clearCanvas() {
+    
+  var c = document.getElementById("canvas");
+  var ctx = c.getContext("2d");
+  ctx.clearRect(0, 0, c.width, c.height);
+  ctx.beginPath();
+
+}
 
 
