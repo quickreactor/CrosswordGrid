@@ -8,6 +8,12 @@
 // better clue system/positioning
 // auto resive canvas when the image div resizes
 
+// 19-06-22
+// anagram circle needs to appear in a consistent place
+// autosave or resume feature
+// cross out letters in anagram circle
+// draw on or add word breaks for multi word clues
+
 
 let stopDrawing = true;
 
@@ -278,7 +284,11 @@ function changeDirection() {
 
 
 function keyboardHandler(e) {
-    console.log("yin");
+    //console.log(e.target);
+    let anInput = $('#anagram-input');
+    if (e.target === anInput[0]) {
+        return
+    }
     if (activeCell !== null) {
         // Put the letter in
         let isLetter = e.which >= keyboard.a && e.which <= keyboard.z;
@@ -527,11 +537,18 @@ function createFields() {
     var array = Array.of(...value);
     var shuffled = shuffle(array);
     var container = $('.window-body');
+    var preview = $('#anagram-preview');
     for(var i = 0; i < characters; i++) {
         $('<div/>', {
             'class': 'field',
-            'text': shuffled[i].toUpperCase()
+            'text': shuffled[i].toUpperCase(),
+            'onclick': 'crossOut(event)'
         }).appendTo(container);
+        $('<span/>', {
+            'class': 'character',
+            'text': '_',
+            'onclick': 'crossOut()'
+        }).appendTo(preview);
     }
     $('#anagram-ok').text("Shuffle");
     distributeFields()
@@ -563,6 +580,7 @@ $('#anagram-input').on('input', function() {
 $("#anagram-input").on('keyup', function (e) {
     if (e.key === 'Enter' || e.keyCode === 13) {
         createFields();
+        createPreview();
     }
 });
 
@@ -587,4 +605,12 @@ function shuffle(array) {
     }
   
     return array;
+  }
+
+  function crossOut(event) {
+    if (event.target.style.textDecoration === "line-through") {
+        event.target.style.textDecoration = "";
+    } else {
+        event.target.style.textDecoration = "line-through";
+    }
   }

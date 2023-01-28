@@ -120,7 +120,7 @@ caret-color: transparent
     border: 1px solid black;
     background-color: white;
     width: 350px;
-    height: 400px;
+    height: 450px;
     position: absolute;
 
     -webkit-touch-callout: none;
@@ -179,3 +179,10 @@ caret-color: transparent
 #anagram-ok {
     margin-right: 10px;
 }
+
+#anagram-preview {
+    border: 1px solid black;
+    margin: 10px;
+}
+
+
