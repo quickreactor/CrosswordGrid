@@ -1,17 +1,15 @@
 // TODO
-// add anagram wheel function
+// separators for words
 // scale entire app by viewport
 // make drawing only available afte you lock the image
 
 // scale by viewport
 // font scaling needs to consider grid size too
 // better clue system/positioning
-// auto resive canvas when the image div resizes
 
 // 19-06-22
-// anagram circle needs to appear in a consistent place
 // autosave or resume feature
-// cross out letters in anagram circle
+// cross out letters remain crossed out post shuffle
 // draw on or add word breaks for multi word clues
 
 
@@ -20,8 +18,8 @@ let stopDrawing = true;
 let container;
 
 let xwGrid = {
-    rows: 13,
-    cols: 13,
+    rows: 15,
+    cols: 15,
     size: 750
 }
 
@@ -38,6 +36,7 @@ const keyboard = {
     "up": 38,
     "right": 39,
     "down": 40,
+    "fslash": 191
     // "ctrl":   17
 };
 
@@ -54,7 +53,7 @@ const pink = "rgba(255,100,150,0.6)"
 const aqua = "rgba(50,220,220,0.6)";
 // const pink = "rgba(255,192,203,0.8)"
 // const aqua = "rgba(0,255,255,0.8)";
-const opacityPink = "rgb(255,192,203,0.2)";
+const opacityPink = "rgba(255,192,203,0.2)";
 const opacityAqua = "rgba(0,255,255,0.2)";
 
 var direction = ACROSS;
@@ -96,7 +95,7 @@ resize();
 
 function resize() {
     ctx.canvas.width = window.innerWidth;
-    ctx.canvas.height = window.innerHeight;
+    ctx.canvas.height = window.innerHeight*2;
 }
 function reposition(event) {
     coord.x = event.offsetX;
@@ -151,7 +150,6 @@ function makeRows(rows, cols) {
       if (colNum === 0) { colNum = cols; }
       cell.setAttribute("column", colNum);
       cell.setAttribute("coord", colNum + "-" + rowNum)
-      cell.style.border = "1px solid rgba(255, 0, 150, 0.8";
       cell.style.userSelect = "none";
       //cell.innerText = (c + 1);
       container.appendChild(cell).className = "grid-item";
@@ -246,14 +244,14 @@ function toggleResizableGrid() {
             $('#container').resizable('enable');
         });
         document.querySelector("#toggle-lock-grid").innerText = "Lock Grid";
-        gridCells.forEach(e => e.style.border = "1px solid rgba(255, 0, 150, 0.8");
+        gridCells.forEach(e => e.classList.remove('locked'));
     } else {
         $(function() {
             $('#container').draggable('disable');
             $('#container').resizable('disable');
         });
         document.querySelector("#toggle-lock-grid").innerText = "Unlock Grid";
-        gridCells.forEach(e => e.style.border = "1px solid rgba(0, 0, 0, 0.1");
+        gridCells.forEach(e => e.classList.add('locked'));
     }
 }
 
@@ -295,6 +293,7 @@ function keyboardHandler(e) {
         let isDirection = e.which >= keyboard.left && e.which <= keyboard.down;
         let isEnter = e.which == keyboard.enter;
         let isBackspace = e.which == keyboard.delete;
+        let isFslash = e.which == keyboard.fslash;
 
         // stop default keypresses
         if (isEnter || isBackspace || isDirection) e.preventDefault();
@@ -310,6 +309,38 @@ function keyboardHandler(e) {
             } else {
                 move(activeCell, 0, -1);
             }
+        } else if (isFslash) {
+            var nextCell = null;
+            if (direction === ACROSS){
+                nextCell = move(activeCell, 1, 0, false);
+                if (activeCell.style.borderRightWidth) {
+                    activeCell.style.borderRightWidth = null
+                    nextCell.style.borderLeftWidth = null;
+                    activeCell.style.borderRightColor = null
+                    nextCell.style.borderLeftColor = null;
+                } else {
+                    activeCell.style.borderRightWidth = '2px';
+                    nextCell.style.borderLeftWidth = '2px';
+                    activeCell.style.borderRightColor = 'rgba(0,0,0)';
+                    nextCell.style.borderLeftColor = 'rgba(0,0,0)';
+                }
+            } else { // DOWN
+                nextCell = move(activeCell, 0, 1, false);
+                if (activeCell.style.borderBottomWidth) {
+                    activeCell.style.borderBottomWidth = null
+                    nextCell.style.borderTopWidth = null;
+                    activeCell.style.borderBottomColor = null
+                    nextCell.style.borderTopColor = null;
+                } else {
+                activeCell.style.borderBottomWidth = '2px';
+                nextCell.style.borderTopWidth = '2px';
+                activeCell.style.borderBottomColor = 'rgba(0,0,0)';
+                nextCell.style.borderTopColor = 'rgba(0,0,0)';
+                }
+            }
+
+            
+
         } else if (isLetter) {
 
                 // get string
@@ -376,18 +407,23 @@ function clickHandler(e) {
     activeCell.focus();
     highlightRowCol()
     activeCell.style.background = highlightColour;
+    //activeCell.style.backgroundClip = "padding-box";
     previousElement = activeCell;
     if (previousElement) { console.log(previousElement) };
 }
 
-function move(cell, spacesX, spacesY) {
+function move(cell, spacesX, spacesY, moveBool = true) {
     let row = parseInt(cell.getAttribute('row'));
     let col = parseInt(cell.getAttribute('column'));
     let nextRow = Math.max(Math.min((row + spacesY), xwGrid.rows), 1);
     let nextCol = Math.max(Math.min((col + spacesX), xwGrid.cols), 1);
     let nextCoord = nextCol + '-' + nextRow;
     var next = document.querySelector("[coord="+"'"+nextCoord+"'"+"]")
-    clickHandler({target: next})
+    if (moveBool === true) {
+        clickHandler({target: next})
+    } else {
+        return next
+    }
 }
 
 function clearAll() {
@@ -397,7 +433,10 @@ function clearAll() {
 }
 
 function highlightRowCol() {
-    Array.from(document.querySelectorAll(".grid-item")).forEach(e => e.style.background = "none");
+    Array.from(document.querySelectorAll(".grid-item")).forEach(e => {
+        e.style.background = "none";
+        //e.style.backgroundClip = "padding-box";
+    });
     var rowNum = parseInt(activeCell.getAttribute('row'));
     var colNum = parseInt(activeCell.getAttribute('column'));
     var thisRow = Array.from(document.querySelectorAll("[row="+"'"+rowNum+"'"+"]"));
@@ -426,13 +465,13 @@ function clearCanvas() {
 }
 
 
-// new window stuff
+// new Anagram Helper window stuff
 var state = {
     isDragging: false,
     isHidden: true,
     xDiff: 0,
     yDiff: 0,
-    x: 50,
+    x: 900,
     y: 50
 };
 
