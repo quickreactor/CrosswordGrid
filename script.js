@@ -538,6 +538,7 @@ function createFields() {
     var shuffled = shuffle(array);
     var container = $('.window-body');
     var preview = $('#anagram-preview');
+    preview.empty();
     for(var i = 0; i < characters; i++) {
         $('<div/>', {
             'class': 'field',
