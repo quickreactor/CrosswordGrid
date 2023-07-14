@@ -6,19 +6,24 @@
 
 <body>
 	<header>
-		<p><input type="file"  accept="image/*" name="image" id="file"  onchange="loadFile(event)" style="display: none;"></p>
+		<p><input type="file" accept="image/*" name="image" id="file" onchange="loadFile(event)" style="display: none;">
+		</p>
 		<p>
 			<label for="file" style="cursor: pointer;">Upload Image</label>
 			<span id="grid-generator">
-				<input type="text" class="grid-input" placeholder="15"> x <input type="text" class="grid-input" placeholder="15"> <button onclick="makeRows()">Make Grid</button>
+				<input type="text" class="grid-input" placeholder="15"> x <input type="text" class="grid-input"
+					placeholder="15"> <button onclick="makeRows()">Make Grid</button>
 			</span>
-			<span id="current-direction">Current Direction: <span id="direction" style="color: crimson;">Across</span></span>
+			<span id="current-direction">Current Direction: <span id="direction"
+					style="color: crimson;">Across</span></span>
 		</p>
 		<p><button id="toggle-lock-image" onclick="toggleResizableImage()">Lock image</button>
-		<button id="toggle-lock-grid" onclick="toggleResizableGrid()">Lock Grid</button>
-		<button id="clear-button" onclick="clearAll()">Clear all squares</button>
-		<button id="button_clear" onclick="clearCanvas()" >Clear drawing</button>
-		<button id="windowtoggle">Anagram Helper</button>
+			<button id="toggle-lock-grid" onclick="toggleResizableGrid()">Lock Grid</button>
+			<button id="clear-button" onclick="clearAll()">Clear all squares</button>
+			<button id="button_clear" onclick="clearCanvas()">Clear drawing</button>
+			<button id="windowtoggle">Anagram Helper</button>
+			<input type="checkbox" id="tentative-checkbox" onchange="updateTentativeEntry(this.checked)">
+			<label for="tentative-checkbox">Tentative</label>
 		</p>
 	</header>
 	<main>
@@ -26,17 +31,9 @@
 			<div class="window-bar">
 				<div>Anagram Circle</div>
 				<span class="window-close">
-					<svg viewport="0 0 12 12" version="1.1"
-						 width="16" height="16"
-						 xmlns="http://www.w3.org/2000/svg">
-						<line x1="1" y1="11"
-							  x2="11" y2="1"
-							  stroke="black"
-							  strokeWidth="2"/>
-						<line x1="1" y1="1"
-							  x2="11" y2="11"
-							  stroke="black"
-							  strokeWidth="2"/>
+					<svg viewport="0 0 12 12" version="1.1" width="16" height="16" xmlns="http://www.w3.org/2000/svg">
+						<line x1="1" y1="11" x2="11" y2="1" stroke="black" strokeWidth="2" />
+						<line x1="1" y1="1" x2="11" y2="11" stroke="black" strokeWidth="2" />
 					</svg>
 				</span>
 			</div>
@@ -46,7 +43,7 @@
 			<div id="anagram-preview">
 
 			</div>
-			
+
 			<div class="window-body">
 			</div>
 		</div>
@@ -55,7 +52,7 @@
 		</div>
 		<canvas id="canvas" style="z-index: 6;"></canvas>
 		<div id="container" style="left: 850px;font-size: 40px;z-index: 8;">
-	
+
 		</div>
 
 	</main>

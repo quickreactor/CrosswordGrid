@@ -1,16 +1,9 @@
 // TODO
-// separators for words
 // scale entire app by viewport
-// make drawing only available afte you lock the image
-
-// scale by viewport
-// font scaling needs to consider grid size too
 // better clue system/positioning
-
-// 19-06-22
 // autosave or resume feature
 // cross out letters remain crossed out post shuffle
-// draw on or add word breaks for multi word clues
+// eraser function
 
 
 let stopDrawing = true;
@@ -37,6 +30,7 @@ const keyboard = {
     "right": 39,
     "down": 40,
     "fslash": 191
+
     // "ctrl":   17
 };
 
@@ -60,21 +54,23 @@ var direction = ACROSS;
 var highlightColour = pink;
 var indicator = opacityPink;
 
-
 container = document.getElementById("container");
 makeRows(xwGrid.cols, xwGrid.rows);
 container.addEventListener("click", clickHandler)
 container.mouseIsOver = false;
-container.onmouseover = function()   {
-    // stop();
-    stopDrawing = true;
+container.onmouseover = function () {
+    if (isGridResizable === false) {
+        stop();
+    }
 };
-container.onmouseout = function()   {
-     stopDrawing = false;
-    // start();
+container.onmouseout = function () {
+    if (isGridResizable === false) {
+        stop();
+    }
 }
+
 document.addEventListener("keydown", keyboardHandler)
-$(function() {
+$(function () {
     $('#container').draggable();
     $('#container').resizable();
 });
@@ -95,7 +91,7 @@ resize();
 
 function resize() {
     ctx.canvas.width = window.innerWidth;
-    ctx.canvas.height = window.innerHeight*2;
+    ctx.canvas.height = window.innerHeight * 2;
 }
 function reposition(event) {
     coord.x = event.offsetX;
@@ -103,11 +99,13 @@ function reposition(event) {
 }
 function start(event) {
     if (stopDrawing !== true) {
+        console.log("start func");
         document.addEventListener("mousemove", draw);
         reposition(event);
     }
 }
 function stop() {
+    console.log("stop func");
     document.removeEventListener("mousemove", draw);
 }
 function draw(event) {
@@ -140,52 +138,52 @@ function makeRows(rows, cols) {
     container.style.setProperty('--grid-rows', rows);
     container.style.setProperty('--grid-cols', cols);
     for (c = 1; c <= (rows * cols); c++) {
-      let cell = document.createElement("div");
-      cell.id = "Cell" + (c);
-    //   cell.setAttribute("contenteditable", "true");
-      var rowNum = Math.ceil(c / (rows));
-      cell.setAttribute("row", rowNum);
-      var colNum = c % cols;
-      //console.log(colNum);
-      if (colNum === 0) { colNum = cols; }
-      cell.setAttribute("column", colNum);
-      cell.setAttribute("coord", colNum + "-" + rowNum)
-      cell.style.userSelect = "none";
-      //cell.innerText = (c + 1);
-      container.appendChild(cell).className = "grid-item";
-      $(function() {
-		$('#container').draggable();
-		$('#container').resizable(
-            {
-                resize: function(event, ui) {
-                  // handle fontsize here
-                  console.log(ui.size); // gives you the current size of the div
-                  var size = ui.size;
-                  xwGrid.size = Math.max(size.width, size.height);
-                  var largestAxis = Math.max(xwGrid.cols, xwGrid.rows);
-                //   console.log(((Math.min(size.width, size.height) / 19) / Math.max(xwGrid.cols, xwGrid.rows)) * 13);
-                  // something like this change the values according to your requirements
-                  $(this).css("font-size", Math.floor(((Math.min(size.width, size.height) / 19) / largestAxis) * 13) + "px"); 
+        let cell = document.createElement("div");
+        cell.id = "Cell" + (c);
+        //   cell.setAttribute("contenteditable", "true");
+        var rowNum = Math.ceil(c / (rows));
+        cell.setAttribute("row", rowNum);
+        var colNum = c % cols;
+        //console.log(colNum);
+        if (colNum === 0) { colNum = cols; }
+        cell.setAttribute("column", colNum);
+        cell.setAttribute("coord", colNum + "-" + rowNum)
+        cell.style.userSelect = "none";
+        //cell.innerText = (c + 1);
+        container.appendChild(cell).className = "grid-item";
+        $(function () {
+            $('#container').draggable();
+            $('#container').resizable(
+                {
+                    resize: function (event, ui) {
+                        // handle fontsize here
+                        console.log(ui.size); // gives you the current size of the div
+                        var size = ui.size;
+                        xwGrid.size = Math.max(size.width, size.height);
+                        var largestAxis = Math.max(xwGrid.cols, xwGrid.rows);
+                        //   console.log(((Math.min(size.width, size.height) / 19) / Math.max(xwGrid.cols, xwGrid.rows)) * 13);
+                        // something like this change the values according to your requirements
+                        $(this).css("font-size", Math.floor(((Math.min(size.width, size.height) / 19) / largestAxis) * 13) + "px");
+                    }
                 }
-            }
-        );
-	});
-    $(container).css("font-size", Math.floor((xwGrid.size / 19) / Math.max(xwGrid.cols, xwGrid.rows)) * 13 + "px"); 
+            );
+        });
+        $(container).css("font-size", Math.floor((xwGrid.size / 19) / Math.max(xwGrid.cols, xwGrid.rows)) * 13 + "px");
+    };
+
+
+
+    let directionSpan = document.querySelector("#direction");
+    directionSpan.innerText = "Across";
+    directionSpan.style.color = pink;
 };
-  
-
-
-let directionSpan = document.querySelector("#direction");
-directionSpan.innerText = "Across";
-directionSpan.style.color = pink;
-};
 
 
 
 
-var loadFile = function(event) {
-	var image = document.getElementById('output');
-	image.src = URL.createObjectURL(event.target.files[0]);
+var loadFile = function (event) {
+    var image = document.getElementById('output');
+    image.src = URL.createObjectURL(event.target.files[0]);
     makeResizableImage();
 };
 
@@ -208,7 +206,7 @@ function toggleResizableImage() {
         const image = document.querySelector(".resizable");
         image.style.zIndex = 7;
         canvas.style.zIndex = 6;
-        $(function() {
+        $(function () {
             $('.resizable').draggable("enable");
             $('.resizable').resizable("enable");
         });
@@ -218,19 +216,19 @@ function toggleResizableImage() {
 }
 
 function makeResizableImage() {
-	$(function() {
-		$('.resizable').draggable();
-		$('.resizable').resizable({ aspectRatio: true });
-	});
+    $(function () {
+        $('.resizable').draggable();
+        $('.resizable').resizable({ aspectRatio: true });
+    });
     isImageResizable = true;
     document.querySelector("#toggle-lock-image").innerText = "Lock Image";
 }
 
 function lockResizableImage() {
-    $(function() {
-		$('.resizable').draggable("disable");
-		$('.resizable').resizable("disable");
-	});
+    $(function () {
+        $('.resizable').draggable("disable");
+        $('.resizable').resizable("disable");
+    });
     isImageResizable = false;
     document.querySelector("#toggle-lock-image").innerText = "Unlock Image";
 }
@@ -239,20 +237,35 @@ function toggleResizableGrid() {
     let gridCells = Array.from(document.querySelectorAll(".grid-item"));
     isGridResizable = !isGridResizable;
     if (isGridResizable) {
-        $(function() {
+        $(function () {
             $('#container').draggable('enable');
             $('#container').resizable('enable');
         });
         document.querySelector("#toggle-lock-grid").innerText = "Lock Grid";
         gridCells.forEach(e => e.classList.remove('locked'));
+        stopDrawing = true;
     } else {
-        $(function() {
+        $(function () {
             $('#container').draggable('disable');
             $('#container').resizable('disable');
         });
         document.querySelector("#toggle-lock-grid").innerText = "Unlock Grid";
         gridCells.forEach(e => e.classList.add('locked'));
+        stopDrawing = false;
     }
+}
+
+
+var tentativeEntry = false; // Initial value of the variable
+
+function updateTentativeEntry(checked) {
+    var checkbox = document.getElementById("tentative-checkbox");
+
+    checkbox.checked = checked; // Update the checkbox state
+
+    tentativeEntry = checked; // Update the variable
+
+    console.log("tentativeEntry:", tentativeEntry); // You can remove this line, it's for testing purposes
 }
 
 function changeDirection() {
@@ -283,7 +296,7 @@ function changeDirection() {
 
 function keyboardHandler(e) {
     //console.log(e.target);
-    let anInput = $('#anagram-input');
+    let anInput = $('#anagram-input'); // makes the text only go in the anagram box
     if (e.target === anInput[0]) {
         return
     }
@@ -294,6 +307,7 @@ function keyboardHandler(e) {
         let isEnter = e.which == keyboard.enter;
         let isBackspace = e.which == keyboard.delete;
         let isFslash = e.which == keyboard.fslash;
+        let isQuestionMark = e.which == keyboard.fslash && e.shiftKey;
 
         // stop default keypresses
         if (isEnter || isBackspace || isDirection) e.preventDefault();
@@ -304,14 +318,16 @@ function keyboardHandler(e) {
         } else if (isBackspace) {
             newFill = " ";
             activeCell.innerText = newFill;
-            if (direction === ACROSS){
+            if (direction === ACROSS) {
                 move(activeCell, -1, 0);
             } else {
                 move(activeCell, 0, -1);
             }
+        } else if (isQuestionMark) {
+            updateTentativeEntry(!tentativeEntry);
         } else if (isFslash) {
             var nextCell = null;
-            if (direction === ACROSS){
+            if (direction === ACROSS) {
                 nextCell = move(activeCell, 1, 0, false);
                 if (activeCell.style.borderRightWidth) {
                     activeCell.style.borderRightWidth = null
@@ -332,46 +348,53 @@ function keyboardHandler(e) {
                     activeCell.style.borderBottomColor = null
                     nextCell.style.borderTopColor = null;
                 } else {
-                activeCell.style.borderBottomWidth = '2px';
-                nextCell.style.borderTopWidth = '2px';
-                activeCell.style.borderBottomColor = 'rgba(0,0,0)';
-                nextCell.style.borderTopColor = 'rgba(0,0,0)';
+                    activeCell.style.borderBottomWidth = '2px';
+                    nextCell.style.borderTopWidth = '2px';
+                    activeCell.style.borderBottomColor = 'rgba(0,0,0)';
+                    nextCell.style.borderTopColor = 'rgba(0,0,0)';
                 }
             }
 
-            
+
 
         } else if (isLetter) {
 
-                // get string
-                newFill = String.fromCharCode(e.which);
-                activeCell.innerText = newFill;
+            // Tentative formatting
+            if (tentativeEntry) {
+                activeCell.classList.add("tentative-cell");
+            } else {
+                activeCell.classList.remove("tentative-cell");
+            }
 
-                // Move The Selection
-                if (direction === ACROSS) {
-                    move(activeCell, 1, 0);
-                } else {
-                    move(activeCell, 0, 1);
-                }
-                
-                // if (direction === ACROSS) {
-                //     let row = parseInt(activeCell.getAttribute('row'));
-                //     let column = parseInt(activeCell.getAttribute('column'));
-                //     let nextCol = parseInt(activeCell.getAttribute('column')) + 1;
-                //     let nextCoord = nextCol + '-' + row;
-                //     console.log(typeof nextCoord);
-                //     console.log(nextCoord);
-                //     var next = document.querySelector("[coord="+"'"+nextCoord+"'"+"]")
-                //     console.log("nexct", next);
-                //     clickHandler({target: next})
-                // } else {
-                //     let row = parseInt(activeCell.getAttribute('row'));
-                //     let column = parseInt(activeCell.getAttribute('column'));
-                //     let nextRow = parseInt(activeCell.getAttribute('row')) + 1;
-                //     let nextCoord = column + '-' + nextRow;
-                //     var next = document.querySelector("[coord="+"'"+nextCoord+"'"+"]")
-                //     clickHandler({target: next})
-                // }
+            // get string
+            newFill = String.fromCharCode(e.which);
+            activeCell.innerText = newFill;
+
+            // Move The Selection
+            if (direction === ACROSS) {
+                move(activeCell, 1, 0);
+            } else {
+                move(activeCell, 0, 1);
+            }
+
+            // if (direction === ACROSS) {
+            //     let row = parseInt(activeCell.getAttribute('row'));
+            //     let column = parseInt(activeCell.getAttribute('column'));
+            //     let nextCol = parseInt(activeCell.getAttribute('column')) + 1;
+            //     let nextCoord = nextCol + '-' + row;
+            //     console.log(typeof nextCoord);
+            //     console.log(nextCoord);
+            //     var next = document.querySelector("[coord="+"'"+nextCoord+"'"+"]")
+            //     console.log("nexct", next);
+            //     clickHandler({target: next})
+            // } else {
+            //     let row = parseInt(activeCell.getAttribute('row'));
+            //     let column = parseInt(activeCell.getAttribute('column'));
+            //     let nextRow = parseInt(activeCell.getAttribute('row')) + 1;
+            //     let nextCoord = column + '-' + nextRow;
+            //     var next = document.querySelector("[coord="+"'"+nextCoord+"'"+"]")
+            //     clickHandler({target: next})
+            // }
         } else if (isDirection) {
             switch (e.which) {
                 case keyboard.left:
@@ -386,7 +409,7 @@ function keyboardHandler(e) {
                 case keyboard.down:
                     move(activeCell, 0, 1);
                     break;
-              }
+            }
         }
     }
 }
@@ -418,9 +441,9 @@ function move(cell, spacesX, spacesY, moveBool = true) {
     let nextRow = Math.max(Math.min((row + spacesY), xwGrid.rows), 1);
     let nextCol = Math.max(Math.min((col + spacesX), xwGrid.cols), 1);
     let nextCoord = nextCol + '-' + nextRow;
-    var next = document.querySelector("[coord="+"'"+nextCoord+"'"+"]")
+    var next = document.querySelector("[coord=" + "'" + nextCoord + "'" + "]")
     if (moveBool === true) {
-        clickHandler({target: next})
+        clickHandler({ target: next })
     } else {
         return next
     }
@@ -439,8 +462,8 @@ function highlightRowCol() {
     });
     var rowNum = parseInt(activeCell.getAttribute('row'));
     var colNum = parseInt(activeCell.getAttribute('column'));
-    var thisRow = Array.from(document.querySelectorAll("[row="+"'"+rowNum+"'"+"]"));
-    var thisCol = Array.from(document.querySelectorAll("[column="+"'"+colNum+"'"+"]"));
+    var thisRow = Array.from(document.querySelectorAll("[row=" + "'" + rowNum + "'" + "]"));
+    var thisCol = Array.from(document.querySelectorAll("[column=" + "'" + colNum + "'" + "]"));
     if (direction === ACROSS) {
         thisRow.forEach(cell => cell.style.background = opacityPink);
     } else {
@@ -448,19 +471,13 @@ function highlightRowCol() {
     }
 }
 
-function lel() {
-    $(function() {
-		$('#container').draggable('enable');
-		$('#container').resizable('enable');
-	});
-}
 
 function clearCanvas() {
-    
-  var c = document.getElementById("canvas");
-  var ctx = c.getContext("2d");
-  ctx.clearRect(0, 0, c.width, c.height);
-  ctx.beginPath();
+
+    var c = document.getElementById("canvas");
+    var ctx = c.getContext("2d");
+    ctx.clearRect(0, 0, c.width, c.height);
+    ctx.beginPath();
 
 }
 
@@ -477,7 +494,7 @@ var state = {
 
 // hehe: http://youmightnotneedjquery.com/
 function ready(fn) {
-    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading"){
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
         fn();
     } else {
         document.addEventListener('DOMContentLoaded', fn);
@@ -496,8 +513,8 @@ function renderWindow(w, myState) {
 
 function clampX(n) {
     return Math.min(Math.max(n, 0),
-                    // container width - window width
-                    500 - 400);
+        // container width - window width
+        500 - 400);
 }
 
 function clampY(n) {
@@ -539,12 +556,13 @@ function onMouseUp() {
 
 function closeWindow() {
     state.isHidden = true;
+    stopDrawing = false;
 
     var w = document.getElementById('window');
     renderWindow(w, state);
 }
 
-ready(function() {
+ready(function () {
     var w = document.getElementById('window');
     renderWindow(w, state);
 
@@ -561,7 +579,7 @@ ready(function() {
     closeButton[0].addEventListener('click', closeWindow);
 
     var toggleButton = document.getElementById('windowtoggle');
-    toggleButton.addEventListener('click', function() {
+    toggleButton.addEventListener('click', function () {
         state.isHidden = !state.isHidden;
         renderWindow(w, state);
     });
@@ -578,7 +596,7 @@ function createFields() {
     var container = $('.window-body');
     var preview = $('#anagram-preview');
     preview.empty();
-    for(var i = 0; i < characters; i++) {
+    for (var i = 0; i < characters; i++) {
         $('<div/>', {
             'class': 'field',
             'text': shuffled[i].toUpperCase(),
@@ -598,11 +616,11 @@ function distributeFields() {
     var radius = 130;
     var fields = $('.field'), container = $('.window-body'),
         width = container.width(), height = container.height(),
-        angle = 0, step = (2*Math.PI) / fields.length;
-    fields.each(function() {
-        var x = Math.round(width/2 + radius * Math.cos(angle) - $(this).width()/2);
-        var y = Math.round(height/2 + radius * Math.sin(angle) - $(this).height()/2);
-        if(window.console) {
+        angle = 0, step = (2 * Math.PI) / fields.length;
+    fields.each(function () {
+        var x = Math.round(width / 2 + radius * Math.cos(angle) - $(this).width() / 2);
+        var y = Math.round(height / 2 + radius * Math.sin(angle) - $(this).height() / 2);
+        if (window.console) {
             console.log($(this).text(), x, y);
         }
         $(this).css({
@@ -613,7 +631,7 @@ function distributeFields() {
     });
 }
 
-$('#anagram-input').on('input', function() {
+$('#anagram-input').on('input', function () {
     $('#anagram-ok').text("OK");
 });
 
@@ -630,27 +648,27 @@ $("#anagram-input").on('keyup', function (e) {
 // END Circle Stuff
 
 function shuffle(array) {
-    let currentIndex = array.length,  randomIndex;
-  
+    let currentIndex = array.length, randomIndex;
+
     // While there remain elements to shuffle.
     while (currentIndex != 0) {
-  
-      // Pick a remaining element.
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex--;
-  
-      // And swap it with the current element.
-      [array[currentIndex], array[randomIndex]] = [
-        array[randomIndex], array[currentIndex]];
-    }
-  
-    return array;
-  }
 
-  function crossOut(event) {
+        // Pick a remaining element.
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        // And swap it with the current element.
+        [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex], array[currentIndex]];
+    }
+
+    return array;
+}
+
+function crossOut(event) {
     if (event.target.style.textDecoration === "line-through") {
         event.target.style.textDecoration = "";
     } else {
         event.target.style.textDecoration = "line-through";
     }
-  }
+}
